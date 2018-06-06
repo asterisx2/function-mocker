@@ -1,0 +1,14 @@
+{
+  "name": "utils",
+  "version": "1.0.0",
+  "description": "A function mocker",
+  "main": "index.js",
+  "author": "Ashwin Singh",
+  "license": "MIT",
+  "dependencies": {
+    "chai": "^4.1.2"
+  },
+  "scripts": {
+    "test": "mocha test/*.spec.js"
+  }
+}
