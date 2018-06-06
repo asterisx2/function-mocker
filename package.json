@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A function mocker",
   "main": "index.js",
-  "author": "Ashwin Singh",
+  "author": "Ashwin Singh ashwinsinghgr8@gmail.com www.ashwin.work",
   "license": "MIT",
   "dependencies": {
     "chai": "^4.1.2",

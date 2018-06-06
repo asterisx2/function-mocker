@@ -6,7 +6,7 @@ describe('Mocker', () => {
     it('Should return correct value for params', () => {
         let someArgs = "Some args";
         let someReturnValue = {text: "someReturnValue", prop: 1};
-        let mock = mocker.new();
+        let mock = mocker.mock();
 
         mock.withArgs(someArgs).returns(someReturnValue).done();
         let func = mock.build();
@@ -29,7 +29,7 @@ describe('Mocker', () => {
         let args4 = "args4";
         let ret2 = "Some other value";
         let hello = () => console.log("Hello from lambda function");
-        let mock = mocker.new();
+        let mock = mocker.mock();
         
         mock.withArgs(args).returns(ret).callsFunc(helloFunc, helloFunc2).withCtx(obj).done();
        
