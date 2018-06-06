@@ -1,12 +1,14 @@
 let obj = {
+    _isfunction_: function(o){
+        return Object.prototype.toString.call(x) == '[object Function]';
+    },
     withArgs: function(...args){
         if(!this._mocker_)
             return console.error("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
         this._data_.call.args = args;
         return {_mocker_:this._mocker_, 
-            withCtx: this._mocker_.withCtx, 
-            returns: this._mocker_.returns, 
-            callsFunc: this._mocker_.callsFunc, 
+            returns: this._mocker_.returns,  
+            callsFunc: this._mocker_.callsFunc,
             _data_: this._data_};
     },
     withCtx: function(ctx){
@@ -14,8 +16,7 @@ let obj = {
         return console.error("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
         this._data_.call.ctx = ctx;
         return {_mocker_:this._mocker_, 
-            returns: this._mocker_.returns, 
-            callsFunc: this._mocker_.callsFunc, 
+            done: this._mocker_.done,  
             _data_: this._data_};
     },
     returns: function(value){
@@ -24,7 +25,6 @@ let obj = {
         this._data_.call.value = value;
         return {_mocker_:this._mocker_, 
             callsFunc: this._mocker_.callsFunc, 
-            build: this._mocker_.build, 
             done: this._mocker_.done,  
             _data_: this._data_};
     },
@@ -35,8 +35,7 @@ let obj = {
             this._data_.call.funcs = [];
         this._data_.call.funcs = this._data_.call.funcs.concat(funcs);
         return {_mocker_:this._mocker_, 
-            callsFunc: this._mocker_.callsFunc, 
-            build: this._mocker_.build,
+            withCtx: this._mocker_.withCtx,
             done: this._mocker_.done,  
             _data_: this._data_};
     },
@@ -46,10 +45,8 @@ let obj = {
         this._data_.callStack.push(this._data_.call);
         this._data_.call = {};
         return {_mocker_:this._mocker_, 
-            callsFunc: this._mocker_.callsFunc, 
-            build: this._mocker_.build,
             withArgs: this._mocker_.withArgs, 
-            withCtx: this._mocker_.withCtx,
+            build: this._mocker_.build,
             _data_: this._data_};
     },
     build: function(){
@@ -92,7 +89,7 @@ let obj = {
 module.exports = {
     
     new: function(){
-        return {_mocker_:obj, withArgs: obj.withArgs, withCtx: obj.withCtx, _data_: {count: 0, call: {}, callStack: []}};
+        return {_mocker_:obj, build:obj.build, withArgs: obj.withArgs, _data_: {count: 0, call: {}, callStack: []}};
     },
    
 }

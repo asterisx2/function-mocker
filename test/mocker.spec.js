@@ -19,16 +19,15 @@ describe('Mocker', () => {
 
         let mock = mocker.new();
         
-        mock = mock.withArgs(args).withCtx(obj).returns(ret).callsFunc(helloFunc, helloFunc2).done();
+        mock.withArgs(args).returns(ret).callsFunc(helloFunc, helloFunc2).withCtx(obj).done();
        
-        mock = mock.withArgs(args2).returns(ret2).done();
+        mock.withArgs(args2).returns(ret2).done();
 
-        mock = mock.withArgs(args3).withCtx(obj2).callsFunc(helloFunc, helloFunc2).done();
+        mock.withArgs(args3).callsFunc(helloFunc, helloFunc2).withCtx(obj2).done();
 
-        mock = mock.withArgs(args4).callsFunc(helloFunc, helloFunc2).done();
+        mock.withArgs(args4).callsFunc(helloFunc, helloFunc2).done();
         
         let func = mock.build();
-
         func(args).should.equal(ret);
         func(args2).should.equal(ret2);
 
