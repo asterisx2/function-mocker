@@ -1,53 +1,151 @@
 let obj = {
     _isfunction_: function(o){
-        return Object.prototype.toString.call(x) == '[object Function]';
+        return Object.prototype.toString.call(o) == '[object Function]';
     },
     withArgs: function(...args){
         if(!this._mocker_)
             return console.error("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
         this._data_.call.args = args;
-        return {_mocker_:this._mocker_, 
-            returns: this._mocker_.returns,  
-            callsFunc: this._mocker_.callsFunc,
-            _data_: this._data_};
+
+        let ret = {};
+        var context = this;
+
+        Object.defineProperty(ret, '_mocker_', {
+            value: context._mocker_,
+            enumerable: false
+        });
+
+        Object.defineProperty(ret, '_data_', {
+            value: context._data_,
+            enumerable: false
+        });
+
+        ret.returns = context._mocker_.returns;
+        ret.callsFunc = context._mocker_.callsFunc;
+        return ret; 
     },
     withCtx: function(ctx){
+        if(!ctx)
+            throw("No context object passed to withCtx");
+
         if(!this._mocker_)
         return console.error("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
+
         this._data_.call.ctx = ctx;
-        return {_mocker_:this._mocker_, 
+
+        let ret = {};
+        var context = this;
+        
+        Object.defineProperty(ret, '_mocker_', {
+            value: context._mocker_,
+            enumerable: false
+        });
+
+        Object.defineProperty(ret, '_data_', {
+            value: context._data_,
+            enumerable: false
+        });
+
+        ret.done = context._mocker_.done;
+        return ret; 
+
+        /*return {_mocker_:this._mocker_, 
             done: this._mocker_.done,  
-            _data_: this._data_};
+            _data_: this._data_};*/
     },
     returns: function(value){
         if(!this._mocker_)
         return console.error("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
+
         this._data_.call.value = value;
-        return {_mocker_:this._mocker_, 
+
+        let ret = {};
+        var context = this;
+        
+        Object.defineProperty(ret, '_mocker_', {
+            value: context._mocker_,
+            enumerable: false
+        });
+
+        Object.defineProperty(ret, '_data_', {
+            value: context._data_,
+            enumerable: false
+        });
+
+        ret.done = context._mocker_.done;
+        ret.callsFunc = context._mocker_.callsFunc;
+        return ret; 
+
+        /*return {_mocker_:this._mocker_, 
             callsFunc: this._mocker_.callsFunc, 
             done: this._mocker_.done,  
-            _data_: this._data_};
+            _data_: this._data_};*/
     },
-    callsFunc: function(...funcs){
+    callsFunc: function(...args){
         if(!this._mocker_)
         return console.error("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
+
         if(!this._data_.call.funcs)
-            this._data_.call.funcs = [];
-        this._data_.call.funcs = this._data_.call.funcs.concat(funcs);
-        return {_mocker_:this._mocker_, 
+            this._data_.call.funcs = {arr: []};
+
+        args.forEach(arg => {
+            if(this._mocker_._isfunction_(arg))
+                this._data_.call.funcs.arr.push(arg);
+            else
+                this._data_.call.funcs.args = arg;
+        });
+
+        let ret = {};
+        var context = this;
+        
+        Object.defineProperty(ret, '_mocker_', {
+            value: context._mocker_,
+            enumerable: false
+        });
+
+        Object.defineProperty(ret, '_data_', {
+            value: context._data_,
+            enumerable: false
+        });
+
+        ret.done = context._mocker_.done;
+        ret.withCtx = context._mocker_.withCtx;
+        return ret; 
+
+        /*return {_mocker_:this._mocker_, 
             withCtx: this._mocker_.withCtx,
             done: this._mocker_.done,  
-            _data_: this._data_};
+            _data_: this._data_};*/
     },
     done: function(){
         if(!this._mocker_)
-        return console.error("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
+            throw ("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
+
         this._data_.callStack.push(this._data_.call);
         this._data_.call = {};
-        return {_mocker_:this._mocker_, 
+
+        let ret = {};
+        var context = this;
+        
+        Object.defineProperty(ret, '_mocker_', {
+            value: context._mocker_,
+            enumerable: false
+        });
+
+        Object.defineProperty(ret, '_data_', {
+            value: context._data_,
+            enumerable: false
+        });
+
+        ret.build = context._mocker_.build;
+        ret.withArgs = context._mocker_.withArgs;
+
+        return ret; 
+
+        /*return {_mocker_:this._mocker_, 
             withArgs: this._mocker_.withArgs, 
             build: this._mocker_.build,
-            _data_: this._data_};
+            _data_: this._data_};*/
     },
     build: function(){
         var ownCtx = this;
@@ -57,8 +155,7 @@ let obj = {
     },
     invoke: function(args) {
         if(!this._mocker_)
-        return console.error("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
-        
+            throw("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
         if(this._data_.callStack)
         {
             let callStacks = this._data_.callStack.filter(call => 
@@ -72,24 +169,47 @@ let obj = {
             let callStack = callStacks[0];
             if(callStack.funcs)
             {
-                callStack.funcs.forEach(func => {
+                callStack.funcs.arr.forEach(func => {
                     if(callStack.ctx)
-                        func.call(callStack.ctx);
+                        if(callStack.funcs.args)
+                            func.call(callStack.ctx, callStack.funcs.args);
+                        else
+                            func.call(callStack.ctx);
                     else
-                        func();
+                        if(callStack.funcs.args)
+                            func(callStack.funcs.args);
+                        else
+                            func();
                 });
             }
             if(callStack.value)
                 return callStack.value;
         }
-
-        return console.error("There is no call stack!");
     }
 }
 module.exports = {
     
     new: function(){
-        return {_mocker_:obj, build:obj.build, withArgs: obj.withArgs, _data_: {count: 0, call: {}, callStack: []}};
+
+        let ret = {};
+        var context = obj;
+        
+        Object.defineProperty(ret, '_mocker_', {
+            value: context,
+            enumerable: false
+        });
+
+        Object.defineProperty(ret, '_data_', {
+            value: {count: 0, call: {}, callStack: []},
+            enumerable: false
+        });
+
+        ret.build = context.build;
+        ret.withArgs = context.withArgs;
+
+        return ret; 
+
+        //return {_mocker_:obj, build:obj.build, withArgs: obj.withArgs, };
     },
    
 }
