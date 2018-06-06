@@ -25,7 +25,7 @@ let obj = {
         return {_mocker_:this._mocker_, 
             callsFunc: this._mocker_.callsFunc, 
             build: this._mocker_.build, 
-            finish: this._mocker_.finish,  
+            done: this._mocker_.done,  
             _data_: this._data_};
     },
     callsFunc: function(...funcs){
@@ -37,10 +37,10 @@ let obj = {
         return {_mocker_:this._mocker_, 
             callsFunc: this._mocker_.callsFunc, 
             build: this._mocker_.build,
-            finish: this._mocker_.finish,  
+            done: this._mocker_.done,  
             _data_: this._data_};
     },
-    finish: function(){
+    done: function(){
         if(!this._mocker_)
         return console.error("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
         this._data_.callStack.push(this._data_.call);
