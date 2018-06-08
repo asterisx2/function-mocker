@@ -8,7 +8,9 @@ let done = require(interfaceDirectory + 'done');
 let invoke = require(interfaceDirectory + "_invoke_");
 let mock = require(interfaceDirectory + 'mock');
 let _isfunction_ = require('./utils/utils')._isfunction_;
-let obj = {
+let data = require(interfaceDirectory + 'data');
+
+let _mocker_ = {
     _isfunction_,
     withArgs,
     returns,
@@ -17,10 +19,11 @@ let obj = {
     done,
     build,
     invoke,
-    mock
+    mock,
+    data
 }
 module.exports = {
     mock: function(){
-        return obj.mock();
+        return _mocker_.mock();
     },
 }

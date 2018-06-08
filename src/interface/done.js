@@ -1,9 +1,13 @@
+let errorNoMockerMsg = require('../utils/constants').values.error.noMocker;
+
 module.exports = function() {
     if(!this._mocker_)
-        throw ("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
+        throw (errorNoMockerMsg);
 
-    this._data_.callStack.push(this._data_.call);
-    this._data_.call = {};
+    let data  = this._mocker_.data;
+
+    data.argsMap[JSON.stringify(data.newMock.args)] = data.newMock;
+    data.newMock = {};
 
     let ret = {};
     var context = this;
@@ -13,18 +17,8 @@ module.exports = function() {
         enumerable: false
     });
 
-    Object.defineProperty(ret, '_data_', {
-        value: context._data_,
-        enumerable: false
-    });
-
     ret.build = context._mocker_.build;
     ret.withArgs = context._mocker_.withArgs;
 
     return ret; 
-
-    /*return {_mocker_:this._mocker_, 
-        withArgs: this._mocker_.withArgs, 
-        build: this._mocker_.build,
-        _data_: this._data_};*/
-}
+};

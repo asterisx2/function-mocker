@@ -1,11 +1,13 @@
+let errorNoArgMsg = require('../utils/constants').values.error.noArgs;
+let errorNoMockerMsg = require('../utils/constants').values.error.noMocker;
 module.exports = function(ctx) {
     if(!ctx)
-        throw("No context object passed to withCtx");
+        throw(errorNoArgMsg.replace('[Args]', 'ctx').replace('[Function]', 'withCtx'));
 
     if(!this._mocker_)
-        return console.error("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
+        throw(errorNoMockerMsg);
 
-    this._data_.call.ctx = ctx;
+    this._mocker_.data.newMock.ctx = ctx;
 
     let ret = {};
     var context = this;
@@ -15,15 +17,6 @@ module.exports = function(ctx) {
         enumerable: false
     });
 
-    Object.defineProperty(ret, '_data_', {
-        value: context._data_,
-        enumerable: false
-    });
-
     ret.done = context._mocker_.done;
     return ret; 
-
-    /*return {_mocker_:this._mocker_, 
-        done: this._mocker_.done,  
-        _data_: this._data_};*/
-}
+};

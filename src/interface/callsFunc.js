@@ -1,16 +1,32 @@
+let errorNoArgMsg = require('../utils/constants').values.error.noArgs;
+let errorNoMockerMsg = require('../utils/constants').values.error.noMocker;
+
 module.exports = function(...args) {
+   
+    if(args.length === 0)
+        throw(errorNoArgMsg.replace('[Args]', 'args').replace('[Function]', 'callsFunc'));
+
     if(!this._mocker_)
-        throw("Cannot call this function without first calling a mocker, use mocker.new() to create a new mocker");
+        throw(errorNoMockerMsg);
 
-    if(!this._data_.call.funcs)
-        this._data_.call.funcs = {arr: []};
+    let data  = this._mocker_.data;
+    
+    if(!data.newMock.functions)
+        data.newMock.functions = [];
 
+    
+    let funcSet = {
+        funcs:[]
+    };
+    
     args.forEach(arg => {
         if(this._mocker_._isfunction_(arg))
-            this._data_.call.funcs.arr.push(arg);
+            funcSet.funcs.push(arg);
         else
-            this._data_.call.funcs.args = arg;
+            funcSet.args = arg;
     });
+    
+    data.newMock.functions.push(funcSet);
 
     let ret = {};
     var context = this;
@@ -20,17 +36,9 @@ module.exports = function(...args) {
         enumerable: false
     });
 
-    Object.defineProperty(ret, '_data_', {
-        value: context._data_,
-        enumerable: false
-    });
-
     ret.done = context._mocker_.done;
     ret.withCtx = context._mocker_.withCtx;
-    return ret; 
+    ret.callsFunc = context._mocker_.callsFunc;
 
-    /*return {_mocker_:this._mocker_, 
-        withCtx: this._mocker_.withCtx,
-        done: this._mocker_.done,  
-        _data_: this._data_};*/
-}
+    return ret; 
+};

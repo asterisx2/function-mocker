@@ -1,13 +1,10 @@
 module.exports = function() {
+   
     let ret = {};
     let context = this;
+
     Object.defineProperty(ret, '_mocker_', {
         value: context,
-        enumerable: false
-    });
-
-    Object.defineProperty(ret, '_data_', {
-        value: {count: 0, call: {}, callStack: []},
         enumerable: false
     });
 
@@ -15,4 +12,4 @@ module.exports = function() {
     ret.withArgs = context.withArgs;
 
     return ret; 
-}
+};
