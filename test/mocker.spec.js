@@ -113,7 +113,32 @@ describe('Mocker', () => {
                 functionCalledWithCtxTimes.should.equal(2);
 
             });
+            it('With different ctxs',() => {
+                var actx = {};
+                var bctx = {};
+                let functionCalledWithCtxTimes = 0;
+                var funcArgs = {
+                    life: 42,
+                    msg: "Does it matter?"
+                };
+                let afunction = function () {
+                    functionCalledWithCtxTimes = this == actx? functionCalledWithCtxTimes + 1 : 0;
+                };
+                let bfunction = function () {
+                    functionCalledWithCtxTimes = this == bctx? functionCalledWithCtxTimes + 1 : 0;
+                };
+                let mockFunc = mock.withArgs(someArgs)
+                .callsFunc(afunction, funcArgs)
+                .withCtx(actx)
+                .callsFunc(bfunction)
+                .withCtx(bctx)
+                .done()
+                .build();
 
+                mockFunc(someArgs);
+
+                functionCalledWithCtxTimes.should.equal(2);
+            });
             it('With Args', () => {
 
                 let functionCalledWithCorrectArgsTimes = 0;

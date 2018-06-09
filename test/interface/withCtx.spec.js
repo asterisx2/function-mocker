@@ -10,10 +10,12 @@ describe('withCtx', () => {
         _mocker_ :{
             data:{
                 newMock:{
-                    ctx: {}
+                    ctx: {},
+                    functions: [{funcs: [], args: {}, ctx: {}}]
                 }
             },
             done: function(){},
+            callsFunc: function(){}
         }
         
     };
@@ -21,17 +23,18 @@ describe('withCtx', () => {
       
         let ctx = {};
         withCtx.call(mocker, ctx);
-        mocker._mocker_.data.newMock.ctx.should.eql(ctx);
+        mocker._mocker_.data.newMock.functions[0].ctx.should.eql(ctx);
     
     });
     it('Should return proper properties', () => {
-        let properties = ["done", "_mocker_"];
+        let properties = ["done", "callsFunc", "_mocker_"];
         let ctx = {};
         let ret = withCtx.call(mocker, ctx);
         Object.getOwnPropertyNames(ret).length.should.equal(properties.length);
         properties.forEach(prop => Object.getOwnPropertyNames(ret).indexOf(prop).should.not.equal(-1));
     
         ret.done.should.equal(mocker._mocker_.done);
+        ret.callsFunc.should.equal(mocker._mocker_.callsFunc);
     });
     describe('Throws error', () => {
         it('When called with no arguments passed', () => {

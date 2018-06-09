@@ -7,8 +7,8 @@ module.exports = function(ctx) {
     if(!this._mocker_)
         throw(errorNoMockerMsg);
 
-    this._mocker_.data.newMock.ctx = ctx;
-
+    let functions = this._mocker_.data.newMock.functions;
+    functions[functions.length - 1].ctx = ctx;
     let ret = {};
     var context = this;
 
@@ -18,5 +18,6 @@ module.exports = function(ctx) {
     });
 
     ret.done = context._mocker_.done;
+    ret.callsFunc = context._mocker_.callsFunc;
     return ret; 
 };

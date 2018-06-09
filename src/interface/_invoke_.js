@@ -14,11 +14,11 @@ module.exports = function(args) {
 
         functions.forEach(funcSet => {
             funcSet.funcs.forEach(func => {
-                if(mappedCall.ctx)
+                if(funcSet.ctx)
                     if(funcSet.args)
-                        func.call(mappedCall.ctx, funcSet.args);
+                        func.call(funcSet.ctx, funcSet.args);
                     else
-                        func.call(mappedCall.ctx);
+                        func.call(funcSet.ctx);
                 else
                     if(funcSet.args)
                         func(funcSet.args);
