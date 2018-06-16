@@ -32,4 +32,6 @@ mockFunc(someArgs); -> calls afunction, bfunction
 ```   
 
 # Remove a mapping?
+```javascript
 mock.remove(someArgs) -> removes mapping for someArgs
+```
