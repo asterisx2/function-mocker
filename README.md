@@ -1,7 +1,7 @@
 # function-mocker
 A declarative JavaScript function mocker for rapid prototyping.
 
-Maps function calls with args which can return values, call functions, with or without context and arguments.
+Maps function calls with args. Function calls can return values, call other functions, with or without context and arguments.
 
 # Return a value?
 ```javascript
@@ -30,3 +30,6 @@ mockFunc(someArgs); -> calls function afunction with funcArgs
 let mockFunc = mock.withArgs(someArgs).callsFunc(afunction, bfunction).done().build();
 mockFunc(someArgs); -> calls afunction, bfunction
 ```   
+
+# Remove a mapping?
+mock.remove(someArgs) -> removes mapping for someArgs
